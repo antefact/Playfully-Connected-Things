@@ -1,37 +1,22 @@
-## Welcome to GitHub Pages
+# Playfully Connected Things
 
-You can use the [editor on GitHub](https://github.com/automato-build/Playfully-Connected-Things/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## New York August 28 – September 1, 2017
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Most of the discussion around connected products is focusing nowadays on creating new and more efficient futures, to quantify and explain the world around us. But what if we could transform these products into something that allows you to explore and play instead? What if instead of a graph with numbers on a screen we could turn data into stories to follow and game to solve? What if instead of hidden and untouchable sensors we could turn them into playful and tangible things?
 
-### Markdown
+We will not talk about gamification, but we will actually focus on redefining what play means in the era of connectivity and sensing. Starting from hacking existing games, we will learn how to create new tangible controls using sensors and how to use data that we can gather from the environment around us and online. Ultimately we will imagine and prototype new play experiences that move away from the screen only and use connectivity to merge digital and physical worlds.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+# [ENROLL HERE](http://ciid.dk/education/summer-school/ciid-summer-school-2017-nyc/workshops/playfully-connected-things/)
 
-```markdown
-Syntax highlighted code block
+## Things you will learn
+- Understand the engagement potential of physical/digital experiences.
+- Understand the basics of connected products and the tools to put stuff online.
+- Experience with Arduino, bluetooth/wifi connectivity and p5js to create a digital/physical experiences.
+- Learn about the basics of Game theory and design.
+- Learn about Hardware and software hacking and prototyping.
 
-# Header 1
-## Header 2
-### Header 3
+# Starter pack
 
-- Bulleted
-- List
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/automato-build/Playfully-Connected-Things/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+- [control your character via ble in the browser](ble-example)
+- [take part to a multiplayer race](multiplayerNetwork)
