@@ -18,8 +18,8 @@ We will not talk about gamification, but we will actually focus on redefining wh
 
 ### Starter pack
 
-- ~~A starter template with the right links to libraries~~
- [code](https://github.com/automato-build/Playfully-Connected-Things/tree/master/the-race) - [live demo](https://automato-build.github.io/Playfully-Connected-Things/the-race/)
+- A starter template with the right links to libraries
+ [code](https://github.com/automato-build/Playfully-Connected-Things/tree/master/empty) - [live demo](https://automato-build.github.io/Playfully-Connected-Things/empty/)
 
 - Take part to a multiplayer race
   [code](https://github.com/automato-build/Playfully-Connected-Things/tree/master/the-race) - [live demo](https://automato-build.github.io/Playfully-Connected-Things/the-race/)
