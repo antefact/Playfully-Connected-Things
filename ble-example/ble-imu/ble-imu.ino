@@ -4,23 +4,23 @@
 
 
 const int ledPin = 13; // set ledPin to on-board LED
-int orientation=0;
+int orientation = 0;
 
 BLEService accelerometerService("19B10010-E8F2-537E-4F6C-D104768A1214"); // create service
 
 // create switch characteristic and allow remote device to read and write
-BLECharCharacteristic shake_event_Characteristic("19B10011-E8F2-537E-4F6C-D104768A1214",BLERead | BLENotify);
-BLEIntCharacteristic orientation_Characteristic("19B10012-E8F2-537E-4F6C-D104768A1214",BLERead | BLENotify);
+BLECharCharacteristic shake_event_Characteristic("19B10011-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
+BLEIntCharacteristic orientation_Characteristic("19B10012-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
 
 
 void setup() {
   Serial.begin(9600);
 
-   BLE.begin();
+  BLE.begin();
 
   // set the local name peripheral advertises
-   BLE.setLocalName("curie");
-  
+  BLE.setLocalName("curie");
+
   // set the UUID for the service this peripheral advertises
   BLE.setAdvertisedService(accelerometerService);
 
@@ -49,38 +49,40 @@ void setup() {
   Serial.println("IMU initialisation complete, waiting for events...");
 }
 
+volatile bool event = false;
+
 void loop() {
   BLE.poll();
-  
+
   int x = CurieIMU.readAccelerometer(X_AXIS);
   Serial.println(x);
-  if (x>7000 && orientation!=1){
-    orientation=1;
+  if (x > 7000 && orientation != 1) {
+    orientation = 1;
     orientation_Characteristic.setValue(1);
     Serial.println("right");
-  }else if(x<-7000 && orientation!=-1){
-    orientation=-1;
+  } else if (x < -7000 && orientation != -1) {
+    orientation = -1;
     orientation_Characteristic.setValue(-1);
     Serial.println("left");
-  }else if (x<7000 && x>-7000 && orientation!=0){
-     orientation=0;
-     orientation_Characteristic.setValue(0);
-     Serial.println("stop");
+  } else if (x < 7000 && x > -7000 && orientation != 0) {
+    orientation = 0;
+    orientation_Characteristic.setValue(0);
+    Serial.println("stop");
+  }
+
+  if (event) {
+    Serial.println("shake");
+    shake_event_Characteristic.setValue(1);
+    digitalWrite(ledPin, HIGH);
+    delay(10);
+    digitalWrite(ledPin, LOW);
+    event = false;
   }
 }
 
 
-static void eventCallback(void){
+static void eventCallback(void) {
   if (CurieIMU.getInterruptStatus(CURIE_IMU_SHOCK)) {
-      Serial.println("shake");
-      shake_event_Characteristic.setValue(1);
-   digitalWrite(ledPin, HIGH);
-   delay(10);
-   digitalWrite(ledPin, LOW);
+    event = true;
   }
 }
-
-
-
-
-
