@@ -1,5 +1,8 @@
 #include <SPI.h>
 #include <BLEPeripheral.h>
+#include <Microbit_display.h>
+
+Microbit_display screen = Microbit_display();
 
 #if !defined(NRF51) && !defined(NRF52) && !defined(__RFduino__)
 #error "This example only works with nRF51 boards"
@@ -24,6 +27,14 @@ int oldbuttonAState = 1;
 
 int buttonBState = 1;
 int oldbuttonBState = 1;
+
+boolean hearth[]={
+  0,1,0,1,0,
+  1,0,1,0,1,
+  1,0,0,0,1,
+  0,1,0,1,0,
+  0,0,1,0,0,
+};
 
 
 void setup() {
