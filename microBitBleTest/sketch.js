@@ -22,7 +22,9 @@ function draw() {
   if (microBit.connected){
     console.log ("acceleration",microBit.getAccelerometer());
     console.log ("temperature",microBit.getTemperature());
-    console.log ("bearing",microBit.getBearing());    
+    console.log ("bearing",microBit.getBearing());
+    console.log ("buttonA",microBit.getButtonA());
+    console.log ("buttonB",microBit.getButtonB());
   }
 
 }
