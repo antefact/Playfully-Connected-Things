@@ -1,8 +1,8 @@
 var discoveryButton = document.getElementById('discover')
 
 discoveryButton.addEventListener('pointerup', function(event) {
-    // Call navigator.bluetooth.requestDevice
-    searchDevice();
+  // Call navigator.bluetooth.requestDevice
+  searchDevice();
 });
 
 var ACCEL_SRV = 'e95d0753-251d-470a-a062-fa1922dfa9a8'
@@ -30,74 +30,76 @@ var TEMP_PERIOD = 'e95d1b25-251d-470a-a062-fa1922dfa9a8'
 
 
 function searchDevice() {
-    filters: []
+  filters: []
 
-    options = {};
-    options.acceptAllDevices = true;
-    options.optionalServices= [ACCEL_SRV,MAGNETO_SRV,BTN_SRV,IO_PIN_SRV,LED_SRV,TEMP_SRV];
+  options = {};
+  options.acceptAllDevices = true;
+  options.optionalServices = [ACCEL_SRV, MAGNETO_SRV, BTN_SRV, IO_PIN_SRV, LED_SRV, TEMP_SRV];
 
-    console.log('Requesting Bluetooth Device...');
-    console.log('with ' + JSON.stringify(options));
+  console.log('Requesting Bluetooth Device...');
+  console.log('with ' + JSON.stringify(options));
 
-    navigator.bluetooth.requestDevice(options)
-        .then(device => {
+  navigator.bluetooth.requestDevice(options)
+  .then(device => {
 
-            console.log('> Name:             ' + device.name);
-            console.log('> Id:               ' + device.id);
-            console.log('> Connected:        ' + device.gatt.connected);
+    console.log('> Name:             ' + device.name);
+    console.log('> Id:               ' + device.id);
+    console.log('> Connected:        ' + device.gatt.connected);
 
-            $('#name').val(device.name);
+    $('#name').val(device.name);
 
-            // Attempts to connect to remote GATT Server.
-            return device.gatt.connect();
+    // Attempts to connect to remote GATT Server.
+    return device.gatt.connect();
 
-        })
-        .then(server => {
-            // Note that we could also get all services that match a specific UUID by
-            // passing it to getPrimaryServices().
-            console.log('Getting Services...');
-            return server.getPrimaryServices();
-        })
-        .then(services => {
-            console.log('Getting Characteristics...');
-            let queue = Promise.resolve();
-            services.forEach(service => {
-                queue = queue.then(_ => service.getCharacteristics().then(characteristics => {
-                    console.log('> Service: ' + service.uuid);
-                    characteristics.forEach(characteristic => {
-                        console.log('>> Characteristic: ' + characteristic.uuid + ' ' +
-                            getSupportedProperties(characteristic));
-                            characteristic.startNotifications()
-                            characteristic.addEventListener('characteristicvaluechanged',
-                                characteristic_updated);
-                            // Reading Battery Level...
-                            return characteristic.readValue();
-                    });
-                }));
-            });
-            return queue;
-        })
-        .catch(error => {
-            console.log('Argh! ' + error);
+  })
+  .then(server => {
+    // Note that we could also get all services that match a specific UUID by
+    // passing it to getPrimaryServices().
+    console.log('Getting Services...');
+    return server.getPrimaryServices();
+  })
+  .then(services => {
+    console.log('Getting Characteristics...');
+    let queue = Promise.resolve();
+    services.forEach(service => {
+      queue = queue.then(_ => service.getCharacteristics().then(characteristics => {
+        console.log('> Service: ' + service.uuid);
+        characteristics.forEach(characteristic => {
+          console.log('>> Characteristic: ' + characteristic.uuid + ' ' +
+            getSupportedProperties(characteristic));
+          characteristic.startNotifications()
+          characteristic.addEventListener('characteristicvaluechanged',
+            characteristic_updated);
+          // Reading Battery Level...
+          return characteristic.readValue();
         });
+      }));
+    });
+    return queue;
+  })
+  .catch(error => {
+    console.log('Argh! ' + error);
+  });
 }
 
 function characteristic_updated(event) {
 
 
   //BUTTON CHARACTERISTIC
-  if (event.target.uuid==BTN_A_STATE){
-    console.log("BTN_A_STATE",event.target.value.getInt8());
+  if (event.target.uuid == BTN_A_STATE) {
+    console.log("BTN_A_STATE", event.target.value.getInt8());
   }
 
-  if(event.target.uuid==BTN_B_STATE){
-    console.log("BTN_B_STATE",event.target.value.getInt8());
+  if (event.target.uuid == BTN_B_STATE) {
+    console.log("BTN_B_STATE", event.target.value.getInt8());
   }
 
   //ACCELEROMETER CHARACTERISTIC
-  if (event.target.uuid==ACCEL_DATA){
-    console.log("ACCEL_DATA",event.target.value.getInt8());
-    console.log(event.target.value);
+  if (event.target.uuid == ACCEL_DATA) {
+    //true is for reading the bits as little-endian
+    console.log("ACCEL_DATA_X", event.target.value.getInt16(0,true));
+    console.log("ACCEL_DATA_Y", event.target.value.getInt16(2,true));
+    console.log("ACCEL_DATA_Z", event.target.value.getInt16(4,true));
   }
 
   // //MAGNETOMETER CHARACTERISTIC
@@ -119,13 +121,13 @@ function characteristic_updated(event) {
 
 
 function isWebBluetoothEnabled() {
-    if (navigator.bluetooth) {
-        return true;
-    } else {
-        ChromeSamples.setStatus('Web Bluetooth API is not available.\n' +
-            'Please make sure the "Experimental Web Platform features" flag is enabled.');
-        return false;
-    }
+  if (navigator.bluetooth) {
+    return true;
+  } else {
+    ChromeSamples.setStatus('Web Bluetooth API is not available.\n' +
+      'Please make sure the "Experimental Web Platform features" flag is enabled.');
+    return false;
+  }
 }
 
 
