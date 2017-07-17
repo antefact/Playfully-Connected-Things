@@ -57,6 +57,14 @@ class uBit {
     return this.magnetometer_bearing;
   }
 
+  getButtonA(){
+    return this.buttonA;
+  }
+
+  getButtonB(){
+    return this.buttonB;
+  }
+
   characteristic_updated(event) {
 
     //BUTTON CHARACTERISTIC
