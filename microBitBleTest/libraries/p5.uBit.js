@@ -21,8 +21,6 @@ var TEMP_SRV = 'e95d6100-251d-470a-a062-fa1922dfa9a8'
 var TEMP_DATA = 'e95d9250-251d-470a-a062-fa1922dfa9a8'
 var TEMP_PERIOD = 'e95d1b25-251d-470a-a062-fa1922dfa9a8'
 
-
-
 class uBit {
 
   constructor() {
@@ -42,28 +40,49 @@ class uBit {
     this.temperature = 0;
     this.buttonA = 0;
     this.buttonB = 0;
-    this.connected=false;
+    this.connected = false;
+
+    this.characteristic = {
+      IO_PIN_DATA: {},
+      IO_AD_CONFIG: {},
+      IO_PIN_CONFIG: {},
+      IO_PIN_PWM: {},
+      LED_STATE: {},
+      LED_TEXT: {},
+      LED_SCROLL: {},
+    }
   }
 
-  getTemperature(){
+  getTemperature() {
     return this.temperature;
   }
 
-  getAccelerometer(){
+  getAccelerometer() {
     return this.accelerometer;
   }
 
-  getBearing(){
+  getBearing() {
     return this.magnetometer_bearing;
   }
 
-  getButtonA(){
+  getButtonA() {
     return this.buttonA;
   }
 
-  getButtonB(){
+  getButtonB() {
     return this.buttonB;
   }
+
+  writePin(pin) {
+    //something like this should work, but we need to create the correct buffer
+    //this.characteristic.IO_PIN_DATA.writeValue(data);
+  }
+
+  readPin(pin) {
+
+  }
+
+
 
   characteristic_updated(event) {
 
@@ -102,7 +121,7 @@ class uBit {
     // MAGNETOMETER CHARACTERISTIC (bearing)
     if (event.target.uuid == MAGNETO_BEARING) {
       //console.log("BEARING", event.target.value.getInt16(0,true));
-      this.magnetometer_bearing=event.target.value.getInt16(0,true);
+      this.magnetometer_bearing = event.target.value.getInt16(0, true);
     }
 
     // TEMPERATURE CHARACTERISTIC
@@ -136,7 +155,7 @@ class uBit {
     .then(server => {
       // Note that we could also get all services that match a specific UUID by
       // passing it to getPrimaryServices().
-      this.connected=true;
+      this.connected = true;
       console.log('Getting Services...');
       return server.getPrimaryServices();
     })
@@ -149,6 +168,42 @@ class uBit {
           characteristics.forEach(characteristic => {
             console.log('>> Characteristic: ' + characteristic.uuid + ' ' +
               getSupportedProperties(characteristic));
+
+              //need to store all the characteristic I want to write to be able to access them later.
+            switch (characteristic.uuid) {
+              case IO_PIN_DATA:
+                this.characteristic.IO_PIN_DATA = characteristic;
+                break;
+
+              case IO_AD_CONFIG:
+                this.characteristic.IO_AD_CONFIG = characteristic;
+                break;
+
+              case IO_PIN_CONFIG:
+                this.characteristic.IO_PIN_CONFIG = characteristic;
+                break;
+
+              case IO_PIN_PWM:
+                this.characteristic.IO_PIN_PWM = characteristic;
+                break;
+
+              case LED_STATE:
+                this.characteristic.LED_STATE = characteristic;
+                break;
+
+              case LED_TEXT:
+                this.characteristic.LED_TEXT = characteristic;
+                break;
+
+              case LED_SCROLL:
+                this.characteristic.LED_SCROLL = characteristic;
+                break;
+
+              default:
+
+            }
+
+
             if (getSupportedProperties(characteristic).includes('NOTIFY')) {
               characteristic.startNotifications().catch(err => console.log('startNotifications', err));
               characteristic.addEventListener('characteristicvaluechanged',
@@ -164,13 +219,6 @@ class uBit {
     });
   }
 }
-
-
-
-
-
-
-
 
 
 /* Utils */
