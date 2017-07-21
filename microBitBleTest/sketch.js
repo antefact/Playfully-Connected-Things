@@ -29,34 +29,33 @@ function setup() {
   button = createButton('connect microBit');
   button.mousePressed(searchDevice); // attach button listener
 
+  microBit.setButtonACallback(function(){
+    console.log("buttonA pressed");
+    microBit.writeMatrixIcon(iconLeft);
+
+  });
+
+  microBit.setButtonBCallback(function(){
+    console.log("buttonB pressed");
+    microBit.writeMatrixText("CIAO!");
+  });
+
 }
 
 function draw() {
   background(23);
   if (microBit.connected){
-
     // console.log ("acceleration",microBit.getAccelerometer());
     // console.log ("temperature",microBit.getTemperature());
     // console.log ("bearing",microBit.getBearing());
-    // console.log ("buttonA",microBit.getButtonA());
-    // console.log ("buttonB",microBit.getButtonB());
-
-    if (microBit.getButtonA()){
-      microBit.writeMatrixIcon(iconLeft);
-    }
-
-    if (microBit.getButtonB()){
-      microBit.writeMatrixTextSpeed(20);
-      microBit.writeMatrixText("CIAO!");
-    }
   }
 
 }
 
-
 function searchDevice(){
   microBit.searchDevice();
 }
+
 
 
 

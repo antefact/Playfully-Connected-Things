@@ -38,8 +38,13 @@ class uBit {
 
     this.magnetometer_bearing = 0;
     this.temperature = 0;
+
     this.buttonA = 0;
+    this.buttonACallBack=function(){};
+
     this.buttonB = 0;
+    this.buttonBCallBack=function(){};
+
     this.connected = false;
 
     this.characteristic = {
@@ -69,8 +74,16 @@ class uBit {
     return this.buttonA;
   }
 
+  setButtonACallback(callbackFunction){
+    this.buttonACallBack=callbackFunction;
+  }
+
   getButtonB() {
     return this.buttonB;
+  }
+
+  setButtonBCallback(callbackFunction){
+    this.buttonBCallBack=callbackFunction;
   }
 
   writePin(pin) {
@@ -112,21 +125,6 @@ class uBit {
 
   writeMatrixTextSpeed(speed){
     var buffer= new Uint8Array(speed);
-
-    if(this.connected){
-      this.characteristic.LED_TEXT.writeValue(speed)
-      .then(_ => {
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    }
-  }
-
-  writeMatrixText(str){
-    var buffer= new Uint8Array(toUTF8Array(str));
-    console.log(toUTF8Array(str));
-
     if(this.connected){
       this.characteristic.LED_TEXT.writeValue(buffer)
       .then(_ => {
@@ -137,7 +135,25 @@ class uBit {
     }
   }
 
+  writeMatrixText(str){
+    var buffer= new Uint8Array(toUTF8Array(str));
+    if(this.connected){
+      this.characteristic.LED_TEXT.writeValue(buffer)
+      .then(_ => {
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+  }
 
+  onButtonA(){
+    this.buttonACallBack();
+  }
+
+  onButtonB(){
+    this.buttonBCallBack();
+  }
 
   characteristic_updated(event) {
 
@@ -145,11 +161,17 @@ class uBit {
     if (event.target.uuid == BTN_A_STATE) {
       //console.log("BTN_A_STATE", event.target.value.getInt8());
       this.buttonA = event.target.value.getInt8();
+      if (this.buttonA){
+        this.onButtonA();
+      }
     }
 
     if (event.target.uuid == BTN_B_STATE) {
       //console.log("BTN_B_STATE", event.target.value.getInt8());
       this.buttonB = event.target.value.getInt8();
+      if (this.buttonB){
+        this.onButtonB();
+      }
     }
 
     //ACCELEROMETER CHARACTERISTIC
