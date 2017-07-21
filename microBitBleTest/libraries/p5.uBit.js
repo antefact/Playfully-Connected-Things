@@ -82,7 +82,7 @@ class uBit {
 
   }
 
-  writeLedsIcon(icon) {
+  writeMatrixIcon(icon) {
     var ledMatrix = new Int8Array(5);
     var buffer = [
       ['0', '0', '0', '0', '0', '0', '0', '0'],
@@ -103,7 +103,33 @@ class uBit {
     if(this.connected){
       this.characteristic.LED_STATE.writeValue(ledMatrix)
       .then(_ => {
-        console.log('display updated');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+  }
+
+  writeMatrixTextSpeed(speed){
+    var buffer= new Uint8Array(speed);
+
+    if(this.connected){
+      this.characteristic.LED_TEXT.writeValue(speed)
+      .then(_ => {
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+  }
+
+  writeMatrixText(str){
+    var buffer= new Uint8Array(toUTF8Array(str));
+    console.log(toUTF8Array(str));
+
+    if(this.connected){
+      this.characteristic.LED_TEXT.writeValue(buffer)
+      .then(_ => {
       })
       .catch(error => {
         console.log(error);
@@ -271,4 +297,35 @@ function getSupportedProperties(characteristic) {
     }
   }
   return '[' + supportedProperties.join(', ') + ']';
+}
+
+function toUTF8Array(str) {
+    var utf8 = [];
+    for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+            utf8.push(0xc0 | (charcode >> 6),
+                      0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+            utf8.push(0xe0 | (charcode >> 12),
+                      0x80 | ((charcode>>6) & 0x3f),
+                      0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+            i++;
+            // UTF-16 encodes 0x10000-0x10FFFF by
+            // subtracting 0x10000 and splitting the
+            // 20 bits of 0x0-0xFFFFF into two halves
+            charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+                      | (str.charCodeAt(i) & 0x3ff));
+            utf8.push(0xf0 | (charcode >>18),
+                      0x80 | ((charcode>>12) & 0x3f),
+                      0x80 | ((charcode>>6) & 0x3f),
+                      0x80 | (charcode & 0x3f));
+        }
+    }
+    return utf8;
 }
