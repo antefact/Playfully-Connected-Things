@@ -82,6 +82,35 @@ class uBit {
 
   }
 
+  writeLedsIcon(icon) {
+    var ledMatrix = new Int8Array(5);
+    var buffer = [
+      ['0', '0', '0', '0', '0', '0', '0', '0'],
+      ['0', '0', '0', '0', '0', '0', '0', '0'],
+      ['0', '0', '0', '0', '0', '0', '0', '0'],
+      ['0', '0', '0', '0', '0', '0', '0', '0'],
+      ['0', '0', '0', '0', '0', '0', '0', '0']
+    ]
+    for (var i = 0; i < 5; i++) {
+      for (var j = 0; j < 5; j++) {
+        buffer[i][7-j] = icon[i][4 - j]
+      }
+    }
+    for (var i = 0; i < 5; i++) {
+      var string = buffer[i].join("");
+      ledMatrix[i]=parseInt(string,2)
+    }
+    if(this.connected){
+      this.characteristic.LED_STATE.writeValue(ledMatrix)
+      .then(_ => {
+        console.log('display updated');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+  }
+
 
 
   characteristic_updated(event) {
@@ -169,7 +198,7 @@ class uBit {
             console.log('>> Characteristic: ' + characteristic.uuid + ' ' +
               getSupportedProperties(characteristic));
 
-              //need to store all the characteristic I want to write to be able to access them later.
+            //need to store all the characteristic I want to write to be able to access them later.
             switch (characteristic.uuid) {
               case IO_PIN_DATA:
                 this.characteristic.IO_PIN_DATA = characteristic;
